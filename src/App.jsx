@@ -5,6 +5,7 @@ import RegisterAdmin from "./pages/RegisterAdmin";
 import Posts from "./pages/Posts";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Navbar from "./components/Navbar"; // Importar el Navbar
+import CreatePost from "./pages/CreatePost"; 
 
 
 const App = () => {
@@ -16,7 +17,9 @@ const App = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register-user" element={<RegisterUser />} />
       <Route path="/register-admin" element={<RegisterAdmin />} />
+      <Route path="/crear-publicacion" element={<CreatePost />} />
       <Route path="/posts" element={<Posts />} />
+      
       <Route path="/" element={<h1>Bienvenido al Blog</h1>} />
        {/*La página de publicaciones está protegida */}
        <Route path="/posts" element={<ProtectedRoute><Posts /></ProtectedRoute>} />
