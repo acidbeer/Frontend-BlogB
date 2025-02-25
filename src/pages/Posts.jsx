@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPosts, createPost, updatePost, deletePost } from "../services/postService";
+import { getPosts, createPost, updatePost, deletePost, addComment, updateComment, deleteComment } from "../services/postService";
 import { useAuth } from "../hooks/useAuth";  // Importar useAuth
 import { useNavigate, Link } from "react-router-dom"; //  Para redireccionar
 
@@ -11,6 +11,8 @@ const Posts = () => {
   const [newPost, setNewPost] = useState({ titulo: "", descripcion: "", contenido: "" });
   const [showCreateForm, setShowCreateForm] = useState(false); // ✅ Controlar visibilidad del formulario
   const [editingPost, setEditingPost] = useState(null);
+  const [newComment, setNewComment] = useState({});
+  const [editingComment, setEditingComment] = useState(null);
 
    // ✅ Cargar publicaciones al montar el componente
    useEffect(() => {
@@ -67,6 +69,72 @@ const Posts = () => {
     }
   };
 
+  // ✅ Agregar comentario (Cualquier usuario autenticado)
+  const handleAddComment = async (postId) => {
+    if (!newComment[postId]) return;
+
+    const commentData = {
+      nombre: user?.username || "anonimo",
+      email: user?.email || "anonimo@gmail",
+      cuerpo: newComment[postId],
+    };
+    try {
+      const createdComment = await addComment(postId, commentData, token);
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? { ...post, comentarios: [...post.comentarios, createdComment] }
+            : post
+        )
+      );
+      setNewComment({ ...newComment, [postId]: "" });
+    } catch (error) {
+      console.error("🚨 Error al agregar el comentario:", error);
+    }
+  };
+
+  // ✅ Modificar comentario (Solo ADMIN)
+  const handleEditComment = async (postId, commentId) => {
+    if (!user?.roles.includes("ROLE_ADMIN")) return;
+
+    try {
+      const updatedComment = await updateComment(postId, commentId, editingComment, token);
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? {
+                ...post,
+                comentarios: post.comentarios.map((comment) =>
+                  comment.id === commentId ? updatedComment : comment
+                ),
+              }
+            : post
+        )
+      );
+      setEditingComment(null);
+    } catch (error) {
+      console.error("🚨 Error al actualizar el comentario:", error);
+    }
+  };
+
+  // ✅ Eliminar comentario (Solo ADMIN)
+  const handleDeleteComment = async (postId, commentId) => {
+    if (!user?.roles.includes("ROLE_ADMIN")) return;
+
+    try {
+      await deleteComment(postId, commentId, token);
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? { ...post, comentarios: post.comentarios.filter((c) => c.id !== commentId) }
+            : post
+        )
+      );
+    } catch (error) {
+      console.error("🚨 Error al eliminar el comentario:", error);
+    }
+  };
+
   return (
     <div>
       <h1>Publicaciones</h1>
@@ -106,8 +174,16 @@ const Posts = () => {
                   <ul style={styles.commentList}>
                     {post.comentarios.map((comentario) => (
                       <li key={comentario.id} style={styles.commentItem}>
-                        <p><strong>{comentario.nombre}</strong> ({comentario.email})</p>
+                        <p><strong>{comentario.nombre}</strong></p>
                         <p>{comentario.cuerpo}</p>
+
+                {/* ✅ Edición y eliminación solo para ADMIN */}
+                {user?.roles.includes("ROLE_ADMIN") && (
+                      <>
+                        <button onClick={() => setEditingComment(comentario)}>EditarComentario</button>
+                        <button onClick={() => handleDeleteComment(post.id, comentario.id)}>EliminarComentario</button>
+                      </>
+                    )}        
                       </li>
                     ))}
                   </ul>
@@ -115,11 +191,25 @@ const Posts = () => {
                   <p>No hay comentarios.</p>
                 )}
 
+                {/* ✅ Agregar comentario */}
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Escribe un comentario..."
+                    value={newComment[post.id] || ""}
+                    onChange={(e) => setNewComment({ ...newComment, [post.id]: e.target.value })}
+                    style={styles.input}
+                  />
+                  <button onClick={() => handleAddComment(post.id)} style={styles.commentButton}>
+                    Comentar
+                  </button>
+                </div>
+
                 {/* ✅ Mostrar botones de edición y eliminación solo para ADMIN */}
                 {user?.roles.includes("ROLE_ADMIN") && (
                   <>
-                    <button onClick={() => setEditingPost({ ...post })}>Editar</button>
-                    <button onClick={() => handleDeletePost(post.id)}>Eliminar</button>
+                    <button onClick={() => setEditingPost({ ...post })}>EditarPublicacion</button>
+                    <button onClick={() => handleDeletePost(post.id)}>EliminarPublicacion</button>
                   </>
                 )}
               </div>

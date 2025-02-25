@@ -13,7 +13,6 @@ const App = () => {
     <div>
       <Navbar /> {/* ✅ Ahora el Navbar se renderiza en todas las páginas */}
     <Routes>
-      <Route path="/" element={<h1>Bienvenido al Blog</h1>} />
       <Route path="/login" element={<Login />} />
       <Route path="/register-user" element={<RegisterUser />} />
       <Route path="/register-admin" element={<RegisterAdmin />} />
