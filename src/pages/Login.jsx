@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import styles from "./Login.module.css"; // Importar el módulo CSS
 
 const Login = () => {
     const { login } = useAuth(); // Ahora useAuth() no será undefined
@@ -21,14 +22,30 @@ const Login = () => {
     };
   
     return (
-      <div>
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit}>
-          <input type="text" name="usernameOrEmail" placeholder="Usuario o Email" onChange={handleChange} />
-          <input type="password" name="password" placeholder="Contraseña" onChange={handleChange} />
-          <button type="submit">Iniciar Sesión</button>
-        </form>
-      </div>
+      <div className={styles.container}>
+      <h2>Iniciar sesión</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          className={styles.input}
+          type="text"
+          name="usernameOrEmail"
+          placeholder="Usuario o Email"
+          required
+          onChange={handleChange}
+        />
+        <input
+          className={styles.input}
+          type="password"
+          name="password"
+          placeholder="Contraseña"
+          required
+          onChange={handleChange}
+        />
+        <button className={styles.button} type="submit">
+          Iniciar Sesión
+        </button>
+      </form>
+    </div>
     );
   };
   

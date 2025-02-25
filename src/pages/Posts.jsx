@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { getPosts, createPost, updatePost, deletePost, addComment, updateComment, deleteComment } from "../services/postService";
 import { useAuth } from "../hooks/useAuth";  // Importar useAuth
 import { useNavigate, Link } from "react-router-dom"; //  Para redireccionar
+import styles from "../styles/Posts.module.css";  // ✅ Importar los estilos correctamente
+
 
 
 const Posts = () => {
@@ -136,84 +138,51 @@ const Posts = () => {
   };
 
   return (
-    <div>
-      <h1>Publicaciones</h1>
+    <div className={styles.postsContainer}>
+      <h1 className={styles.postsTitle}>Publicaciones</h1>
 
-      {/* ✅ Listar todas las publicaciones */}
       {posts.length > 0 ? (
         posts.map((post) => (
-          <div key={post.id} style={styles.postCard}>
-            {editingPost?.id === post.id ? (
-              <div>
-                <input
-                  type="text"
-                  value={editingPost.titulo}
-                  onChange={(e) => setEditingPost({ ...editingPost, titulo: e.target.value })}
-                />
-                <input
-                  type="text"
-                  value={editingPost.descripcion}
-                  onChange={(e) => setEditingPost({ ...editingPost, descripcion: e.target.value })}
-                />
-                <textarea
-                  value={editingPost.contenido}
-                  onChange={(e) => setEditingPost({ ...editingPost, contenido: e.target.value })}
-                />
-                <button onClick={() => handleEditPost(post.id)}>Guardar</button>
-                <button onClick={() => setEditingPost(null)}>Cancelar</button>
-              </div>
-            ) : (
-              <div>
-                <h2>{post.titulo}</h2>
-                <p><strong>Descripción:</strong> {post.descripcion}</p>
-                <p><strong>Contenido:</strong> {post.contenido}</p>
+          <div key={post.id} className={styles.postCard}>
+            <h2 className={styles.postTitle}>{post.titulo}</h2>
+            <p className={styles.postDescription}><strong>Descripción:</strong> {post.descripcion}</p>
+            <p className={styles.postContent}><strong>Contenido:</strong> {post.contenido}</p>
 
-                {/* ✅ Sección de comentarios */}
-                <h3>Comentarios:</h3>
-                {post.comentarios && post.comentarios.length > 0 ? (
-                  <ul style={styles.commentList}>
-                    {post.comentarios.map((comentario) => (
-                      <li key={comentario.id} style={styles.commentItem}>
-                        <p><strong>{comentario.nombre}</strong></p>
-                        <p>{comentario.cuerpo}</p>
+            <div className={styles.commentContainer}>
+              <h3>Comentarios:</h3>
+              {post.comentarios && post.comentarios.length > 0 ? (
+                <ul>
+                  {post.comentarios.map((comentario) => (
+                    <li key={comentario.id} className={styles.commentItem}>
+                      <p className={styles.commentText}><strong>{comentario.nombre}</strong></p>
+                      <p>{comentario.cuerpo}</p>
 
-                {/* ✅ Edición y eliminación solo para ADMIN */}
-                {user?.roles.includes("ROLE_ADMIN") && (
-                      <>
-                        <button onClick={() => setEditingComment(comentario)}>EditarComentario</button>
-                        <button onClick={() => handleDeleteComment(post.id, comentario.id)}>EliminarComentario</button>
-                      </>
-                    )}        
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No hay comentarios.</p>
-                )}
+                      {user?.roles.includes("ROLE_ADMIN") && (
+                        <div className={styles.buttonGroup}>
+                          <button onClick={() => setEditingComment(comentario)} className={`${styles.button} ${styles.buttonSmall}`}>Editar</button>
+                          <button onClick={() => handleDeleteComment(post.id, comentario.id)} className={`${styles.buttonDanger} ${styles.buttonSmall}`}>Eliminar</button>
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No hay comentarios.</p>
+              )}
+            </div>
 
-                {/* ✅ Agregar comentario */}
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Escribe un comentario..."
-                    value={newComment[post.id] || ""}
-                    onChange={(e) => setNewComment({ ...newComment, [post.id]: e.target.value })}
-                    style={styles.input}
-                  />
-                  <button onClick={() => handleAddComment(post.id)} style={styles.commentButton}>
-                    Comentar
-                  </button>
-                </div>
+            <input type="text" placeholder="Escribe un comentario..." className={styles.inputField} />
+            
+            <div className={styles.buttonGroup}>
+              <button className={styles.button}>Comentar</button>
+              {user?.roles.includes("ROLE_ADMIN") && (
+                <>
+                  <button onClick={() => setEditingPost({ ...post })} className={styles.button}>Editar</button>
+                  <button onClick={() => handleDeletePost(post.id)} className={styles.buttonDanger}>Eliminar</button>
+                </>
+              )}
+            </div>
 
-                {/* ✅ Mostrar botones de edición y eliminación solo para ADMIN */}
-                {user?.roles.includes("ROLE_ADMIN") && (
-                  <>
-                    <button onClick={() => setEditingPost({ ...post })}>EditarPublicacion</button>
-                    <button onClick={() => handleDeletePost(post.id)}>EliminarPublicacion</button>
-                  </>
-                )}
-              </div>
-            )}
           </div>
         ))
       ) : (
@@ -223,48 +192,6 @@ const Posts = () => {
   );
 };
 
-//✅ Estilos para mejorar la UI
-const styles = {
-  createButton: {
-    backgroundColor: "#007bff",
-    color: "#fff",
-    padding: "10px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    marginBottom: "10px",
-  },
-  createFormContainer: {
-    backgroundColor: "#f8f9fa",
-    padding: "20px",
-    borderRadius: "5px",
-    marginBottom: "20px",
-  },
-  createForm: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-  },
-  postsContainer: {
-    marginTop: "20px",
-  },
-  postCard: {
-    border: "1px solid #ddd",
-    padding: "10px",
-    marginBottom: "10px",
-    borderRadius: "5px",
-    backgroundColor: "#f9f9f9",
-  },
-  commentList: {
-    listStyleType: "none",
-    padding: 0,
-  },
-  commentItem: {
-    border: "1px dashed #999",
-    padding: "5px",
-    marginBottom: "5px",
-    backgroundColor: "#fff",
-  },
-};
+
 
 export default Posts;
