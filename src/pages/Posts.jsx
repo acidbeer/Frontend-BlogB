@@ -91,7 +91,7 @@ const Posts = () => {
       );
       setNewComment({ ...newComment, [postId]: "" });
     } catch (error) {
-      console.error("🚨 Error al agregar el comentario:", error);
+      console.error(" Error al agregar el comentario:", error);
     }
   };
 
@@ -144,45 +144,106 @@ const Posts = () => {
       {posts.length > 0 ? (
         posts.map((post) => (
           <div key={post.id} className={styles.postCard}>
-            <h2 className={styles.postTitle}>{post.titulo}</h2>
-            <p className={styles.postDescription}><strong>Descripción:</strong> {post.descripcion}</p>
-            <p className={styles.postContent}><strong>Contenido:</strong> {post.contenido}</p>
+            {editingPost?.id === post.id ? (
+              <div className={styles.editForm}>
+                <input
+                  type="text"
+                  value={editingPost.titulo}
+                  onChange={(e) => setEditingPost({ ...editingPost, titulo: e.target.value })}
+                  className={styles.inputField}
+                  placeholder="Nuevo título"
+                />
+                <input
+                  type="text"
+                  value={editingPost.descripcion}
+                  onChange={(e) => setEditingPost({ ...editingPost, descripcion: e.target.value })}
+                  className={styles.inputField}
+                  placeholder="Nueva descripción"
+                />
+                <textarea
+                  value={editingPost.contenido}
+                  onChange={(e) => setEditingPost({ ...editingPost, contenido: e.target.value })}
+                  className={styles.textArea}
+                  placeholder="Nuevo contenido"
+                />
+                <div className={styles.buttonGroup}>
+                  <button onClick={() => handleEditPost(post.id)} className={styles.button}>
+                    Guardar
+                  </button>
+                  <button onClick={() => setEditingPost(null)} className={styles.buttonDanger}>
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <h2 className={styles.postTitle}>{post.titulo}</h2>
+                <p className={styles.postDescription}><strong>Descripción:</strong> {post.descripcion}</p>
+                <p className={styles.postContent}><strong>Contenido:</strong> {post.contenido}</p>
 
-            <div className={styles.commentContainer}>
-              <h3>Comentarios:</h3>
-              {post.comentarios && post.comentarios.length > 0 ? (
-                <ul>
-                  {post.comentarios.map((comentario) => (
-                    <li key={comentario.id} className={styles.commentItem}>
-                      <p className={styles.commentText}><strong>{comentario.nombre}</strong></p>
-                      <p>{comentario.cuerpo}</p>
+                <div className={styles.commentContainer}>
+                  <h3>Comentarios:</h3>
+                  {post.comentarios && post.comentarios.length > 0 ? (
+                    <ul>
+                      {post.comentarios.map((comentario) => (
+                        <li key={comentario.id} className={styles.commentItem}>
+                          {editingComment?.id === comentario.id ? (
+                            <>
+                              <input
+                                type="text"
+                                value={editingComment.cuerpo}
+                                onChange={(e) => setEditingComment({ ...editingComment, cuerpo: e.target.value })}
+                                className={styles.inputField}
+                              />
+                              <button onClick={() => handleEditComment(post.id, comentario.id)} className={styles.button}>Guardar</button>
+                              <button onClick={() => setEditingComment(null)} className={styles.buttonDanger}>Cancelar</button>
+                            </>
+                          ) : (
+                            <>
+                              <p className={styles.commentText}><strong>{comentario.nombre}</strong></p>
+                              <p>{comentario.cuerpo}</p>
+                              {user?.roles.includes("ROLE_ADMIN") && (
+                                <div className={styles.buttonGroup}>
+                                  <button onClick={() => setEditingComment(comentario)} className={styles.button}>Editar</button>
+                                  <button onClick={() => handleDeleteComment(post.id, comentario.id)} className={styles.buttonDanger}>Eliminar</button>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No hay comentarios.</p>
+                  )}
+                </div>
+              
+                <input 
+                 type="text" 
+                 placeholder="Escribe un comentario..." 
+                 className={styles.inputField} 
+                 value={newComment[post.id] || ""} 
+                 onChange={(e) => setNewComment({ ...newComment, [post.id]: e.target.value })} 
+                 />
 
-                      {user?.roles.includes("ROLE_ADMIN") && (
-                        <div className={styles.buttonGroup}>
-                          <button onClick={() => setEditingComment(comentario)} className={`${styles.button} ${styles.buttonSmall}`}>Editar</button>
-                          <button onClick={() => handleDeleteComment(post.id, comentario.id)} className={`${styles.buttonDanger} ${styles.buttonSmall}`}>Eliminar</button>
-                        </div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No hay comentarios.</p>
-              )}
-            </div>
+                <div className={styles.buttonGroupP}>
+                <button onClick={() => handleAddComment(post.id)} className={styles.button}>
+                  Comentar
+                </button>
 
-            <input type="text" placeholder="Escribe un comentario..." className={styles.inputField} />
-            
-            <div className={styles.buttonGroup}>
-              <button className={styles.button}>Comentar</button>
-              {user?.roles.includes("ROLE_ADMIN") && (
+                {user?.roles.includes("ROLE_ADMIN") && (
                 <>
-                  <button onClick={() => setEditingPost({ ...post })} className={styles.button}>Editar</button>
-                  <button onClick={() => handleDeletePost(post.id)} className={styles.buttonDanger}>Eliminar</button>
-                </>
-              )}
-            </div>
-
+                <button onClick={() => setEditingPost({ ...post })} className={styles.button}>
+                  Editar Publicación
+                </button>
+                <button onClick={() => handleDeletePost(post.id)} className={styles.buttonDanger}>
+                  Eliminar Publicación
+                </button>
+               </>
+            )}
+          </div>
+              </>
+            )}
           </div>
         ))
       ) : (

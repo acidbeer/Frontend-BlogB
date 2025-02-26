@@ -60,12 +60,7 @@
     color: #444;
 }
   
-/* Contenedor de los botones con espacio */
-.buttonGroup {
-    display: flex;
-    gap: 10px;  /* Espacio uniforme entre botones */
-    margin-top: 10px;
-}
+
   
 /* Botones */
 .button {
@@ -86,6 +81,7 @@
 /* Botón de Peligro (Eliminar) */
 .buttonDanger {
     background: #dc3545;
+    font-size: 12px;
 }
   
 .buttonDanger:hover {
@@ -100,9 +96,16 @@
 .buttonGroup {
     display: flex;
     flex-wrap: wrap;  /* Permite que los botones bajen de línea si es necesario */
-    gap: 12px;  /* Aumentamos el espacio entre botones */
-    margin-top: 15px; /* Separa los botones del contenido anterior */
+    gap: 10px;  /* Aumentamos el espacio entre botones */
+    margin-top: 30px; /* Separa los botones del contenido anterior */
     justify-content: flex-start; /* Alinea los botones al inicio */
+}
+.buttonGroupP {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los botones bajen de línea si no caben */
+    gap: 15px;  /*  Ajusta la separación entre botones */
+    margin-top: 20px; /*  Separa el grupo de botones del contenido anterior */
+    justify-content: flex-start; /* Alinea los botones a la izquierda */
 }
   
 /* Caja de Comentarios */
@@ -112,5 +115,6 @@
     border-radius: 5px;
     border: 1px solid #ccc;
     margin-top: 5px;
+    margin-bottom: 15px; /* Separa la caja de comentarios de los botones */
     font-size: 14px;
 }
