@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { apiClient } from "./api/apiClient"; // Importamos axios preconfigurado
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import RegisterUser from "./pages/RegisterUser";
 import RegisterAdmin from "./pages/RegisterAdmin";
@@ -28,36 +29,25 @@ const App = () => {
 }, []);
 
   return (
+    
     <div>
-      <Navbar /> {/* Ahora el Navbar se renderiza en todas las páginas */}
-      <h1>Bienvenido al Blog</h1>
-      <h2 style={{ color: "blue" }}>Últimas Publicaciones</h2>
+    {/* ✅ Agregar Navbar para que se muestre en todas las páginas */}
+    <Navbar />
 
-      {/*Mostrar las publicaciones fuera de <Routes> */}
-      {loading ? (
-        <p>Cargando publicaciones...</p>
-      ) : (
-        <ul>
-          {titles.length > 0 ? (
-            titles.map((titulo, index) => <li key={index}>{titulo}</li>)
-          ) : (
-            <p>No hay publicaciones disponibles.</p>
-          )}
-        </ul>
-      )}
-
+    {/* ✅ Colocar Routes correctamente */}
     <Routes>
+      <Route path="/" element={<Home titles={titles} loading={loading} />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register-user" element={<RegisterUser />} />
       <Route path="/register-admin" element={<RegisterAdmin />} />
       <Route path="/crear-publicacion" element={<CreatePost />} />
       <Route path="/posts" element={<Posts />} />
       
-      <Route path="/" element={<h1>Bienvenido al Blog</h1>} />
+      <Route path="/" />
        {/*La página de publicaciones está protegida */}
        <Route path="/posts" element={<ProtectedRoute><Posts /></ProtectedRoute>} />
     </Routes>
-    </div>
+</div>
   );
 };
 
