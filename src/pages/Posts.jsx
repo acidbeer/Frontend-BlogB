@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getPosts, createPost, updatePost, deletePost, addComment, updateComment, deleteComment } from "../services/postService";
 import { useAuth } from "../hooks/useAuth";  // Importar useAuth
 import { useNavigate, Link } from "react-router-dom"; //  Para redireccionar
-import styles from "../styles/Posts.module.css";  // ✅ Importar los estilos correctamente
+import styles from "../styles/Posts.module.css";  //  Importar los estilos correctamente
 
 
 
@@ -11,12 +11,12 @@ const Posts = () => {
   const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
   const [newPost, setNewPost] = useState({ titulo: "", descripcion: "", contenido: "" });
-  const [showCreateForm, setShowCreateForm] = useState(false); // ✅ Controlar visibilidad del formulario
+  const [showCreateForm, setShowCreateForm] = useState(false); //  Controlar visibilidad del formulario
   const [editingPost, setEditingPost] = useState(null);
   const [newComment, setNewComment] = useState({});
   const [editingComment, setEditingComment] = useState(null);
 
-   // ✅ Cargar publicaciones al montar el componente
+   // Cargar publicaciones al montar el componente
    useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -32,7 +32,7 @@ const Posts = () => {
     fetchPosts();
   }, []);
 
-  // ✅ Crear una nueva publicación
+  //  Crear una nueva publicación
   const handleCreatePost = async (e) => {
     e.preventDefault();
     if (!user?.roles.includes("ROLE_ADMIN") || !token) return;
@@ -46,7 +46,7 @@ const Posts = () => {
     }
   };
 
-  // ✅ Editar una publicación
+  //  Editar una publicación
   const handleEditPost = async (postId) => {
     if (!user?.roles.includes("ROLE_ADMIN") || !token) return;
 
@@ -59,7 +59,7 @@ const Posts = () => {
     }
   };
 
-  // ✅ Eliminar una publicación
+  //  Eliminar una publicación
   const handleDeletePost = async (postId) => {
     if (!user?.roles.includes("ROLE_ADMIN") || !token) return;
 
@@ -71,7 +71,7 @@ const Posts = () => {
     }
   };
 
-  // ✅ Agregar comentario (Cualquier usuario autenticado)
+  // Agregar comentario (Cualquier usuario autenticado)
   const handleAddComment = async (postId) => {
     if (!newComment[postId]) return;
 
@@ -95,7 +95,7 @@ const Posts = () => {
     }
   };
 
-  // ✅ Modificar comentario (Solo ADMIN)
+  //  Modificar comentario (Solo ADMIN)
   const handleEditComment = async (postId, commentId) => {
     if (!user?.roles.includes("ROLE_ADMIN")) return;
 
@@ -119,7 +119,7 @@ const Posts = () => {
     }
   };
 
-  // ✅ Eliminar comentario (Solo ADMIN)
+  //  Eliminar comentario (Solo ADMIN)
   const handleDeleteComment = async (postId, commentId) => {
     if (!user?.roles.includes("ROLE_ADMIN")) return;
 
@@ -133,7 +133,7 @@ const Posts = () => {
         )
       );
     } catch (error) {
-      console.error("🚨 Error al eliminar el comentario:", error);
+      console.error(" Error al eliminar el comentario:", error);
     }
   };
 

@@ -2,20 +2,20 @@ import { useState } from "react";
 import { createPost } from "../services/postService";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import styles from "./CreatePost.module.css"; // ✅ Importar el CSS Module
+import styles from "./CreatePost.module.css"; //  Importar el CSS Module
 
 const CreatePost = () => {
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const [newPost, setNewPost] = useState({ titulo: "", descripcion: "", contenido: "" });
 
-  // ✅ Solo ADMIN puede acceder
+  //  Solo ADMIN puede acceder
   if (!user?.roles.includes("ROLE_ADMIN")) {
     navigate("/posts");
     return null;
   }
 
-  // ✅ Crear publicación
+  //  Crear publicación
   const handleCreatePost = async (e) => {
     e.preventDefault();
     try {

@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       try {
-        // ✅ Validar si el token tiene 3 partes antes de decodificar
+        // Validar si el token tiene 3 partes antes de decodificar
         if (token.split(".").length !== 3) {
           console.error("Token inválido (no tiene las 3 partes):", token);
           logout();
@@ -19,13 +19,13 @@ export const AuthProvider = ({ children }) => {
 
         const decodedToken = jwtDecode(token);
 
-        // ✅ Verificar si el token contiene la clave "roles"
+        // Verificar si el token contiene la clave "roles"
         if (!decodedToken.roles|| !Array.isArray(decodedToken.roles)) {
           console.error("Token no contiene roles válidos:", decodedToken);
           logout();
           return;
         }
-         // ✅ Validar si el token ha expirado
+         // Validar si el token ha expirado
          const currentTime = Math.floor(Date.now() / 1000); // Tiempo actual en segundos
          if (decodedToken.exp < currentTime) {
            console.warn("El token ha expirado.");
@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("token", data.tokenDeAcceso);
         setToken(data.tokenDeAcceso);
 
-        // ✅ Validar token antes de decodificar
+        //  Validar token antes de decodificar
         if (data.tokenDeAcceso.split(".").length !== 3) {
           console.error("Token inválido recibido:", data.tokenDeAcceso);
           return;
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
 
         const decodedToken = jwtDecode(data.tokenDeAcceso);
 
-        // ✅ Validar roles correctamente
+        //  Validar roles correctamente
         if (!decodedToken.roles || !Array.isArray(decodedToken.roles)) {
           console.error("Token sin roles válidos:", decodedToken);
           logout();

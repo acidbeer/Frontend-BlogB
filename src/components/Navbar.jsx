@@ -3,11 +3,11 @@ import { useAuth } from "../hooks/useAuth";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();  // ⬅️ Hook para redirigir
+  const navigate = useNavigate();  //  Hook para redirigir
 
   const handleLogout = () => {
     logout();
-    navigate("/");  // ⬅️ Redirigir al Home después de cerrar sesión
+    navigate("/");  //  Redirigir al Home después de cerrar sesión
   };
 
   return (
@@ -44,8 +44,8 @@ const Navbar = () => {
   );
 };
 
-// ✅ Estilos mejorados
-// ✅ Estilos mejorados
+// Estilos mejorados
+// Estilos mejorados
 const styles = {
   navbar: {
     display: "flex",

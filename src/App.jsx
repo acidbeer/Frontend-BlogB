@@ -31,10 +31,10 @@ const App = () => {
   return (
     
     <div>
-    {/* ✅ Agregar Navbar para que se muestre en todas las páginas */}
+    {/*  Agregar Navbar para que se muestre en todas las páginas */}
     <Navbar />
 
-    {/* ✅ Colocar Routes correctamente */}
+    {/*  Colocar Routes correctamente */}
     <Routes>
       <Route path="/" element={<Home titles={titles} loading={loading} />} />
       <Route path="/login" element={<Login />} />
